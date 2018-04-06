@@ -17,12 +17,6 @@ namespace PlaceSearchAPI.Controllers
         public FavoritePlaceController(FavoritePlaceContext context)
         {
             _context = context;
-
-            if (_context.FavoritePlaces.Count() == 0)
-            {
-                _context.FavoritePlaces.Add(new FavoritePlace { lat="0", lng = "0", name = "MyPlace", address = "Sumaré, SP" });
-                _context.SaveChanges();
-            }
         }
 
         // GET api/favoriteplace/{id}
@@ -30,7 +24,7 @@ namespace PlaceSearchAPI.Controllers
         public IActionResult GetById(long id)
         {
             
-            var place = _context.FavoritePlaces.FirstOrDefault(t => t.id == id);
+            var place = _context.FavoritePlaces.SingleOrDefault(t => t.id == id);
             if (place == null)
             {
                 return NotFound();

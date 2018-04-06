@@ -1,0 +1,199 @@
+a, .btn
+{
+    cursor: pointer;
+}
+.pin-img
+{
+    width: 15px;
+    height:20px;
+    margin-right: 3px;
+}
+.pin-img-new
+{
+    position: absolute;
+    width: 20px;
+    display:none;
+}
+#msgAdd
+{
+    position: absolute;
+    top: 60px;
+    left: 50%;
+}
+.panel
+{
+    border: 1px solid rgb(51, 51, 51);
+    border-radius: 4px;
+    padding: 10px;
+    max-width: 400px;
+    overflow: hidden;
+}
+
+p.breakline{
+    min-width: 140px;
+    word-break: keep-all;
+}
+
+.content-wrapper
+{
+    padding-top: 0;
+}
+.logo1
+{
+    margin-top: 10px;
+    margin-bottom: 15%;
+    height: 90px;
+}
+.logo1 > a > img
+{
+    max-width: 90%;
+}
+.logo-2
+{
+    position: absolute !important;
+    bottom: 5px !important;
+    width: 85%;
+    padding-left: 20px;
+    z-index:-1;
+}
+#collapseMarkerType
+{
+    background: lightgray !important;
+    padding-bottom: 10px;
+    z-index:100;
+}
+#exampleAccordion
+{
+    height: auto !important;
+}
+.nav-link
+{
+    height: 38px;
+}
+#new-marker
+{
+    background: rgb(11, 167, 154) !important;
+    color: white !important;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.sidenav-second-level{
+    overflow-y: auto;
+}
+.btn-search
+{
+    color: white;
+    background: rgb(255, 118, 55);
+}
+.col-10, .col-2
+{
+    padding: 0 !important;
+}
+.flex-sm-column
+{
+    position: relative;
+    padding-right: 10px;
+    padding-left: 10px;
+    overflow-y: auto;
+    height: 100%;
+    display: block;
+}
+.nav-side
+{
+    margin-bottom: 10px;
+}
+.subtema
+{
+    list-style: none;
+    padding-left: 0px;
+    margin-bottom: 10px;
+}
+
+.subtema > li:last-child
+{
+    margin-bottom: 25px!important;
+}
+
+.menu
+{
+    position: fixed;
+    width: 25%;
+    height: 100%;
+    z-index: 100;
+    top:0;
+    float: left;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.clicavel
+{
+    cursor: pointer;
+}
+
+.content
+{
+    position: fixed;
+    overflow: hidden;
+    width: 75%;
+    right: 0px;
+    top: 50px;
+    float: right;
+}
+
+.navbar
+{
+    position: fixed!important;
+    width: 100%;
+    top: 0px;
+    height: 50px;
+    z-index: 100;
+}
+
+
+@media screen and (max-width: 450px)
+{
+    .menu
+    {
+        display:none;
+    }
+    .content
+    {
+        position: absolute;
+        max-height: calc(100% - 50px);
+        width: 100%;
+        float: right;
+    }
+    .nav-item
+    {
+        padding-left: 10px;
+    }
+    .toggle-menu
+    {
+        padding-left: 5px;
+        padding-right: 5px;
+        position: fixed;
+        width: auto;
+        height: 50px;
+        top:70px;
+        z-index: 10;
+    }
+    .menu.active
+    {
+        position: fixed;
+        width: calc(100% - 50px);
+        height: 100%;
+        z-index: 100;
+        top: 0px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        display: block;
+    }
+    .toggle-menu.active
+    {
+        width: 50px;
+        right:0px !important;
+    }
+    .toggle-menu.active span
+    {
+        display: none;
+    }
+}

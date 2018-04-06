@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #map {
+        width: 100%;
+        height: 100vh;
+    }
+</style>
+
+<div id="map"></div>
+
+<script>
+function initMap()
+{
+    if (navigator.geolocation) navigator.geolocation.getCurrentPosition(Mapa.instanciar);
+    else alert("Sua localização não foi encontrada. Seu navegador não oferece suporte ao recurso ou você não irá permitir-nos te localizar");
+}
+</script>
+<script async defer accesskey="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhSrhxUDRpBokcU3OFAUpBkh2owtOXemw&libraries=places&callback=initMap"></script>
+
+
+

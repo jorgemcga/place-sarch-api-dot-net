@@ -315,6 +315,33 @@ var Marker = {
     },
 };
 
+var FavoritePlace = {
+
+    list: function ()
+    {
+        jQuery("#submenu-favorite").html("");
+
+        jQuery.ajax({
+            url: "api/favoriteplace",
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data)
+            {
+                for (let i = 0; i < data.length; i++)
+                {
+                    jQuery("#submenu-favorite").append(ServicePlaces.addSubmenu(data[i]));
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Erro: ");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    },
+};
+
 var Infowindow = {
 
     create: function(id, coordenate)
@@ -356,7 +383,10 @@ var Infowindow = {
 };
 
 
-$(document).ready(function() {
+$(document).ready(function () {
+
+    FavoritePlace.list();
+
     jQuery("#search-address").keypress(function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();

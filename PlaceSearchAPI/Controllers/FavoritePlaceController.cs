@@ -19,11 +19,18 @@ namespace PlaceSearchAPI.Controllers
             _context = context;
         }
 
+        // GET api/favoriteplace
+        [HttpGet(Name = "GetAll")]
+        public IActionResult GetAll()
+        {
+            var places = _context.FavoritePlaces.ToList<FavoritePlace>();
+            return new ObjectResult(places);
+        }
+
         // GET api/favoriteplace/{id}
         [HttpGet("{id}", Name = "Get")]
         public IActionResult GetById(long id)
-        {
-            
+        {   
             var place = _context.FavoritePlaces.SingleOrDefault(t => t.id == id);
             if (place == null)
             {
@@ -34,7 +41,7 @@ namespace PlaceSearchAPI.Controllers
 
         // POST api/favoriteplace
         [HttpPost]
-        public IActionResult Create([FromBody] FavoritePlace place)
+        public IActionResult Create([FromForm] FavoritePlace place)
         {
             if (place == null)
             {
@@ -50,7 +57,7 @@ namespace PlaceSearchAPI.Controllers
 
         // POST api/favoriteplace/{id}>
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] FavoritePlace place)
+        public IActionResult Update(long id, [FromForm] FavoritePlace place)
         {
             if (place == null || place.id != id)
             {

@@ -10,3 +10,4 @@ C:\Users\Jorge\source\repos\PlaceSearchAPI\PlaceSearchAPI\obj\Debug\netcoreapp2.
 C:\Users\Jorge\source\repos\PlaceSearchAPI\PlaceSearchAPI\obj\Debug\netcoreapp2.0\PlaceSearchAPI.csproj.CopyComplete
 C:\Users\Jorge\source\repos\PlaceSearchAPI\PlaceSearchAPI\obj\Debug\netcoreapp2.0\PlaceSearchAPI.dll
 C:\Users\Jorge\source\repos\PlaceSearchAPI\PlaceSearchAPI\obj\Debug\netcoreapp2.0\PlaceSearchAPI.pdb
+C:\Users\Jorge\source\repos\PlaceSearchAPI\PlaceSearchAPI\obj\Debug\netcoreapp2.0\PlaceSearchAPI.csprojResolveAssemblyReference.cache

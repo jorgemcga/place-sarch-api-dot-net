@@ -349,6 +349,7 @@ var FavoritePlace = {
             dataType: 'JSON',
             success: function (data)
             {
+                Mapa.favorites = [];
                 jQuery("#favorite-loding").hide();
 
                 if (data.length == 0) return jQuery("#submenu-favorite").html("Você ainda não tem nenhum local salvo");

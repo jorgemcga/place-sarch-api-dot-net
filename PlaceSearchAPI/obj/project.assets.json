@@ -13119,11 +13119,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jorge\\source\\repos\\PlaceSearchAPI\\PlaceSearchAPI\\PlaceSearchAPI.csproj",
+      "projectUniqueName": "c:\\Users\\Jorge\\source\\repos\\PlaceSearchAPI\\PlaceSearchAPI\\PlaceSearchAPI.csproj",
       "projectName": "PlaceSearchAPI",
-      "projectPath": "C:\\Users\\Jorge\\source\\repos\\PlaceSearchAPI\\PlaceSearchAPI\\PlaceSearchAPI.csproj",
+      "projectPath": "c:\\Users\\Jorge\\source\\repos\\PlaceSearchAPI\\PlaceSearchAPI\\PlaceSearchAPI.csproj",
       "packagesPath": "C:\\Users\\Jorge\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Jorge\\source\\repos\\PlaceSearchAPI\\PlaceSearchAPI\\obj\\",
+      "outputPath": "c:\\Users\\Jorge\\source\\repos\\PlaceSearchAPI\\PlaceSearchAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

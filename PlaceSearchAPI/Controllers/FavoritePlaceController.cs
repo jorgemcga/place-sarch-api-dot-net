@@ -75,6 +75,7 @@ namespace PlaceSearchAPI.Controllers
             newPlace.lng = place.lng;
             newPlace.name = place.name;
             newPlace.address = place.address;
+            newPlace.icon = place.icon;
 
             _context.FavoritePlaces.Update(newPlace);
             _context.SaveChanges();

@@ -3,7 +3,9 @@ var Mapa = {
     map: null,
     layer:null,
     markers: [],
+    favorites: [],
     infoWindows: [],
+    favInfoWindows: [],
     temp: null,
     coordenate: {lat: 0, lng: 0},
 
@@ -17,6 +19,8 @@ var Mapa = {
             center: Mapa.coordenate
         });
         Mapa.infoMyPlace(Mapa.coordenate);
+
+        return FavoritePlace.list();
     },
 
     infoMyPlace(coordenate)
@@ -24,7 +28,7 @@ var Mapa = {
         let infoWindow = Infowindow.create(0, coordenate);
         infoWindow.setContent("Minha localização");
 
-        let marker = Marker.create(0, coordenate, "Meu Local");
+        let marker = Marker.create(0, coordenate.lat, coordenate.lng, "Meu Local");
         Marker.eventOpenInfoWindow(marker, infoWindow);
     },
 
@@ -107,9 +111,12 @@ var ServicePlaces = {
 
         for (var i = 0; i < results.length; i++)
         {
-            results[i].id = i + 1;
-            ServicePlaces.createMarker(results[i]);
-            submenu += ServicePlaces.addSubmenu(results[i]);
+            if (!FavoritePlace.findByName(results[i].name))
+            {
+                results[i].id = i + 1;
+                ServicePlaces.createMarker(results[i]);
+                submenu += ServicePlaces.addSubmenu(results[i]);
+            }
         }
 
         jQuery("#tot-place").html("("+results.length+")");
@@ -120,38 +127,45 @@ var ServicePlaces = {
     {
         let coordenate = place.geometry.location;
 
+        place.id = place.id;
+
         let infowindow = Infowindow.create(place.id, coordenate);
         infowindow.setContent(ServicePlaces.createInfoWindowContent(place));
 
-        let marker = Marker.create(place.id, coordenate, place.name, place.icon);
+        let marker = Marker.create(place.id, coordenate.lat(), coordenate.lng(), place.name, place.vicinity, place.icon);
 
         Marker.eventOpenInfoWindow(marker, infowindow);
     },
 
     createInfoWindowContent: function (place)
     {
-        let tag = "<div class='panel'>";
-                tag += "<div class='row'>";
-                    tag += "<div class='col-12'>";
-                        tag += "<strong> Local: </strong>" + place.name;
-                    tag +="</div>";
-                    tag += "<div class='col-12'>";
-                        tag += "<strong> Endereço: </strong>" + place.vicinity;
-                    tag +="</div>";
-                tag +="</div>";
-            tag +="</div>";
-        return tag;
+        let address = (place.vicinity !== undefined) ? place.vicinity : place.address;
+        let html = "<div class='panel'>";
+                html += "<div class='row'>";
+                    html += "<div class='col-12'>";
+                        html += "<strong> Local: </strong>" + place.name;
+                    html +="</div>";
+                    html += "<div class='col-12'>";
+                        html += "<strong> Endereço: </strong>" + address;
+                    html +="</div>";
+                html +="</div>";
+            html +="</div>";
+        return html;
     },
 
     addSubmenu: function(place)
     {
-        return "<li class='nav-item'><a class='nav-link nav-side' onclick='ServicePlaces.goTo("+place.id+")'>"+place.name + "</a></li>";
+        let html = "<li class='nav-item'>";
+            html += "<span class='nav-link nav-side' title='Ir para o local'><a onclick='ServicePlaces.goTo("+place.id+")'>"+place.name + "</a>";
+            html += " <span class='fa fa-star clicavel favorite' title='Favoritar' onclick=FavoritePlace.favorite("+place.id+")></span></span>";
+            html += "</li>";
+        return html;
     },
 
-    goTo: function (id)
+    goTo: function (id, tipo = 1)
     {
         let marker = Marker.find(id);
-        let infoWindow = Infowindow.find(id);
+        let infoWindow = (tipo == 1) ? Infowindow.find(id) : Infowindow.findFavs(id);
 
         Mapa.map.setCenter(marker.position);
         infoWindow.open(Mapa.map, marker);
@@ -161,8 +175,9 @@ var ServicePlaces = {
 
 var Marker = {
 
-    create: function(id, coordenate, title, icon = null)
+    create: function(id, lat, lng, title, address = "", icon = null)
     {
+        let coordenate = new google.maps.LatLng(lat, lng);
         let marker = null;
 
         if (icon == null) {
@@ -170,7 +185,10 @@ var Marker = {
                 position: coordenate,
                 map: Mapa.map,
                 id: id,
-                title: title
+                title: title,
+                lat: lat,
+                lng: lng,
+                address: address
             });
         }
         else
@@ -185,7 +203,10 @@ var Marker = {
                map: Mapa.map,
                title: title,
                id: id,
-               icon: image
+               icon: image,
+               lat: lat,
+               lng: lng,
+               address: address
            });
 
            Mapa.markers.push(marker);
@@ -320,6 +341,7 @@ var FavoritePlace = {
     list: function ()
     {
         jQuery("#submenu-favorite").html("");
+        jQuery("#favorite-loding").show("");
 
         jQuery.ajax({
             url: "api/favoriteplace",
@@ -327,9 +349,21 @@ var FavoritePlace = {
             dataType: 'JSON',
             success: function (data)
             {
+                jQuery("#favorite-loding").hide();
+
+                if (data.length == 0) return jQuery("#submenu-favorite").html("Você ainda não tem nenhum local salvo");
+                
                 for (let i = 0; i < data.length; i++)
                 {
-                    jQuery("#submenu-favorite").append(ServicePlaces.addSubmenu(data[i]));
+                    jQuery("#submenu-favorite").append(FavoritePlace.addSubmenu(data[i]));
+                    
+                    let infowindow = Infowindow.create(data[i].id, {lat: data[i].lat, lng: data[i].lng}, 2);
+                    infowindow.setContent(ServicePlaces.createInfoWindowContent(data[i]));
+                    
+                    let marker = Marker.create(data[i].id, data[i].lat, data[i].lng, data[i].name, data[i].address, data[i].icon); 
+
+                    Marker.eventOpenInfoWindow(marker, infowindow);
+                    Mapa.favorites.push(marker);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -340,18 +374,102 @@ var FavoritePlace = {
             }
         });
     },
+
+    favorite: function (id)
+    {
+        let place = Marker.find(id);
+        
+        if (FavoritePlace.findByName(place.title)) return alert("Este local já foi salvo");
+
+        let favorite = {
+            lat: place.lat,
+            lng: place.lng,
+            name: place.title,
+            address: place.address,
+            icon: place.icon.url
+        };
+
+        jQuery.ajax({
+            url: "api/favoriteplace",
+            type: 'POST',
+            data: favorite,
+            dataType: 'JSON',
+            success: function (favorite)
+            {
+                if (favorite.length == 0) return false;
+                return FavoritePlace.list();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Erro: ");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    },
+
+    unfavorite: function (id)
+    {
+        let place = FavoritePlace.find(id);
+        
+        jQuery.ajax({
+            url: "api/favoriteplace/"+place.id,
+            type: 'DELETE',
+            dataType: 'JSON',
+            success: function (favorite)
+            {
+                return FavoritePlace.list();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log("Erro: ");
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    },
+
+    find: function(id)
+    {
+        for(let i = 0; i < Mapa.favorites.length; i++)
+        {
+            if (Mapa.favorites[i].id == id) return Mapa.favorites[i];
+        }
+        return false;
+    },
+
+    findByName: function(name)
+    {
+        for(let i = 0; i < Mapa.favorites.length; i++)
+        {
+            if (Mapa.favorites[i].title == name) return Mapa.favorites[i];
+        }
+        return false;
+    },
+
+    addSubmenu: function(place)
+    {
+        let html = "<li class='nav-item'>";
+            html += "<span class='nav-link nav-side' title='Ir para o local'><a onclick='ServicePlaces.goTo("+place.id+", 2)'>"+place.name + "</a>";
+            html += " <span class='fa fa-star-o clicavel unfavorite' title='Desfavoritar' onclick=FavoritePlace.unfavorite("+place.id+")></span></span>";
+            html += "</li>";
+        return html;
+    },
 };
 
 var Infowindow = {
 
-    create: function(id, coordenate)
+    create: function(id, coordenate, tipo = 1)
     {
         let infoWindow = new google.maps.InfoWindow({
             id: id,
             center: coordenate,
             position:coordenate,
         });
-        Mapa.infoWindows.push(infoWindow);
+
+        if (tipo == 1) Mapa.infoWindows.push(infoWindow);
+        else Mapa.favInfoWindows.push(infoWindow);
+
         return infoWindow;
     },
 
@@ -360,6 +478,15 @@ var Infowindow = {
         for (let i = 0; i < Mapa.infoWindows.length; i++)
         {
             if (Mapa.infoWindows[i].id == id) return Mapa.infoWindows[i];
+        }
+        return false;
+    },
+
+    findFavs: function (id)
+    {
+        for (let i = 0; i < Mapa.favInfoWindows.length; i++)
+        {
+            if (Mapa.favInfoWindows[i].id == id) return Mapa.favInfoWindows[i];
         }
         return false;
     },
@@ -384,8 +511,6 @@ var Infowindow = {
 
 
 $(document).ready(function () {
-
-    FavoritePlace.list();
 
     jQuery("#search-address").keypress(function (event) {
         if (event.keyCode === 13) {

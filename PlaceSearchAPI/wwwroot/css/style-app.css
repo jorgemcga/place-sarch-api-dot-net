@@ -149,6 +149,15 @@ p.breakline{
     z-index: 100;
 }
 
+.favorite:hover
+{
+    color: yellow;
+}
+
+.unfavorite:hover
+{
+    color: red;
+}
 
 @media screen and (max-width: 450px)
 {
